@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Movies</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+<h1>Movies</h1>
+  <body class="bg-dark text-light">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row" id="appendData"></div>
+        </div>
+
+        <div class="col-md-6 position-fixed" style="top: 0; right: 0;">
+          <div id="detailedInfo" class="p-4" style="max-width: 100%; max-height: 700px; overflow-y: auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      async function fetchData() {
+        const url = 'https://imdb8.p.rapidapi.com/auto-complete?q=game%20of%20thr';
+        const options = {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': '35d4d4d649mshe33e0059dffab29p17ca15jsnae05a2daf827',
+            'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+          }
+        };
+
+        try {
+          const response = await fetch(url, options);
+          const data = await response.json();
+          const list = data.d;
+
+          const moviesContainer = document.querySelector('#appendData');
+
+          list.forEach(item => {
+            const name = item.l;
+            const poster = item.i.imageUrl;
+            const movieHTML = `<div class="movie card mb-3" style="cursor: pointer;" onclick="showDetails('${name}', '${poster}')">
+                                <img src="${poster}" class="card-img-top" alt="${name}">
+                                <div class="card-body">
+                                  <h5 class="card-title">${name}</h5>
+                                </div>
+                              </div>`;
+            moviesContainer.innerHTML += movieHTML;
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function showDetails(name, poster) {
+        const detailedInfoContainer = document.querySelector('#detailedInfo');
+        const detailedHTML = `<div class="detailed-info">
+                                <img src="${poster}" class="img-fluid" alt="${name}">
+                                <h2>${name}</h2>
+                              </div>`;
+        detailedInfoContainer.innerHTML = detailedHTML;
+      }
+
+      fetchData();
+    </script>
+  </body>
+</html>
